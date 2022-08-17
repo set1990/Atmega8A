@@ -1,0 +1,79 @@
+ENC28j60
+PB5 (SCK)
+PB4 (MISO)
+PB3 (MOSI)
+PB2 (SS)
+
+Sygnał podzielony jest na równe okresy zazwyczaj o długości 20ms, 
+sygnał wypełniający mieści się z zakresie od 1ms dla skrajnie lewej pozycji do 2ms dla skrajnie prawej pozycji. 
+Wypełnienie 1.5ms pozwala ustawić serwo idealnie na środku.
+0.5ms do 2.5ms (1.5 środek)
+
+Serwa pomiar
+PE2 (ADC7)
+PE1 (ADC6)
+PC5 (ADC5)
+PC4 (ADC4)
+PC3 (ADC3)
+PC2 (ADC2)
+PC1 (ADC1)
+PC0 (ADC0)
+
+Serwa sterowanie
+PD0(OUT0) 
+PD1(OUT1) 
+PD2(OUT2) 
+PD3(OUT3) 
+PD4(OUT4) 
+PD5(OUT5) 
+PD6(OUT6) 
+PD7(OUT7) 
+
+PC 192.168.1.151 Atmega8 192.168.1.150
+
+Timer0
+12 000 000 
+Scaler 1024
+0,01171875	Mhz
+11718,75	hz
+85,33333333	us
+0,08533333333	ms
+20	ms
+234,375	ticks
+20,625	ticks
+	
+Timer1
+0,08533333333	ms
+20	ms
+234,375	ticks
+20,625	ticks
+12	Mhz
+12000000	hz
+0,08333333333	us
+0,00008333333333	ms
+1	ms = 1000 us
+12000	ticks
+1	us
+12	ticks	
+
+Serwo
+30000 dla 2.5ms max
+6000  dla 0.5ms min
+1000 punktów = 24(0,1%)
+ustawienie min+1  6024 (9600)
+ustawienie max-1 29976 (26400)
+1000 punktów real = 17(0,1%)
+
+
+pozycja  10 0,71V ADC = 0x00b4 = 180
+pozycja  60 0,87V ADC = 0x00d6 = 214
+pozycja 120 1,05V ADC = 0x0102 = 256
+pozycja 180 1,24V ADC = 0x012d = 301
+pozycja 250 1,45V ADC = 0x015f = 351
+pozycja 500 2,23V ADC = 0x0215 = 533
+pozycja 750 2,99V ADC = 0x02c6 = 710
+pozycja 820 3,19V ADC = 0x02f6 = 758
+pozycja 850 3,29V ADC = 0x030b = 779
+pozycja 890 3,41V ADC = 0x0328 = 808
+pozycja 950 3,59V ADC = 0x0352 = 850
+pozycja 990 3,71V ADC = 0x036c = 876
