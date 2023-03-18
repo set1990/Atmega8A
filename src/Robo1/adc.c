@@ -20,7 +20,8 @@ void ADC_Handle()
  	if(!state.run)
  	{
  		ADCSRA  = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
- 	 	ADMUX = (1<<REFS0)|(state.adc);
+ 	 	if(state.adc==ADC_VOID) ADMUX = (1<<REFS0)|(ADC_NEXT);
+ 	 	else ADMUX = (1<<REFS0)|(state.adc);
  	 	ADCSRA |= (1<<ADSC);	// Start conversion
  	 	state.run = 1;
  	}

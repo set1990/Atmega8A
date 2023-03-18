@@ -8,7 +8,9 @@
 #ifndef ADC_H_
 #define ADC_H_
 
-#define ADC_MAX		7
+#define ADC_MAX		5
+#define ADC_VOID	4
+#define ADC_NEXT	6
 
 uint16_t ADC_value[ADC_MAX];
 uint8_t ADC_fresh[ADC_MAX];

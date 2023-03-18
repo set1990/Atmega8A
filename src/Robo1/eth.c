@@ -10,6 +10,7 @@
 #include "eth.h"
 #include "adc.h"
 #include "steps.h"
+#include "LIS3MDL.h"
 
 #define ORDER_MAX 	  	0x10
 #define ARG_MAX		  	ORDER_MAX-0x01
@@ -21,6 +22,8 @@
 #define ADD_STEP		0x06
 #define CLEAR_STEPS		0x07
 #define LIST_STEPS		0x08
+#define LIS3MDL_TR		0x09
+#define LIS3MDL_READ	0x0A
 
 #define GET_SERWO_NUM(ARG)	 (ARG[0])
 #define GET_SERWO_VALUE(ARG) ((ARG[1]<<8)|ARG[2])
@@ -60,50 +63,61 @@ void Eth_order_Handle()
 	{
 		switch(EthData.order.type)
 		{
-		case SET_NEW_VLUE:
-			Serwo_set_value(GET_SERWO_NUM(EthData.order.arg),GET_SERWO_VALUE(EthData.order.arg));
-			NewOrderFlag=0;
-			break;
+			case SET_NEW_VLUE:
+				Serwo_set_value(GET_SERWO_NUM(EthData.order.arg),GET_SERWO_VALUE(EthData.order.arg));
+				NewOrderFlag=0;
+				break;
 
-		case ADC_READ:
-			UdpSendDataTmpPort(datagramin.ip, datagramin.port, (const unsigned char *)(&ADC_value), sizeof(ADC_value));
-			NewOrderFlag=0;
-			break;
+			case ADC_READ:
+				UdpSendDataTmpPort(datagramin.ip, datagramin.port, (const unsigned char *)(&ADC_value), sizeof(ADC_value));
+				NewOrderFlag=0;
+				break;
 
-		case ENABLE_SERWO:
-			Serwo_ON_OFF(ENABLE);
-			NewOrderFlag=0;
-			break;
+			case ENABLE_SERWO:
+				Serwo_ON_OFF(GET_SERWO_NUM(EthData.order.arg), ENABLE);
+				NewOrderFlag=0;
+				break;
 
-		case DISABLE_SERWO:
-			Serwo_ON_OFF(DISABLE);
-			Steps_pause();
-			NewOrderFlag=0;
-			break;
+			case DISABLE_SERWO:
+				Serwo_ON_OFF(GET_SERWO_NUM(EthData.order.arg), DISABLE);
+				Steps_pause();
+				NewOrderFlag=0;
+				break;
 
-		case RUN_PROGRAM:
-			Steps_run();
-			NewOrderFlag=0;
-			break;
+			case RUN_PROGRAM:
+				Steps_run();
+				NewOrderFlag=0;
+				break;
 
-		case ADD_STEP:
-			Steps_add(GET_SERWO_NUM(EthData.order.arg),GET_SERWO_VALUE(EthData.order.arg));
-			NewOrderFlag=0;
-			break;
+			case ADD_STEP:
+				Steps_add(GET_SERWO_NUM(EthData.order.arg),GET_SERWO_VALUE(EthData.order.arg));
+				NewOrderFlag=0;
+				break;
 
-		case CLEAR_STEPS:
-			Steps_clear();
-			NewOrderFlag=0;
-			break;
+			case CLEAR_STEPS:
+				Steps_clear();
+				NewOrderFlag=0;
+				break;
 
-		case LIST_STEPS:
-			UdpSendDataTmpPort(datagramin.ip, datagramin.port, Steps_list(), sizeof(steps_q)*MAX_STEPS);
-			NewOrderFlag=0;
-			break;
+			case LIST_STEPS:
+				UdpSendDataTmpPort(datagramin.ip, datagramin.port, Steps_list(), sizeof(steps_q)*MAX_STEPS);
+				NewOrderFlag=0;
+				break;
 
-		default:
-			NewOrderFlag=0;
-			break;
+			case LIS3MDL_TR:
+				LIS3MDL_Triger();
+				NewOrderFlag=0;
+				break;
+
+			case LIS3MDL_READ:
+				UdpSendDataTmpPort(datagramin.ip, datagramin.port, (const unsigned char *)(&LIS3MDL_date), sizeof(LIS3MDL_date));
+				LIS3MDL_date[pNEW_VAL] = 0;
+				NewOrderFlag=0;
+				break;
+
+			default:
+				NewOrderFlag=0;
+				break;
 		}
 	}
 

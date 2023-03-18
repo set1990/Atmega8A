@@ -51,11 +51,33 @@ const unsigned char* Steps_list()
 
 char step_over(uint16_t value)
 {
+	static char special_step_count = 0;
+	static char special_step_flag = 0;
 	char falg = 0;
-	value = ((value*7)/10) + 175;
-	if((ADC_value[steps_program[step_current].num]>=MINUS20P(value))
-     &&(ADC_value[steps_program[step_current].num]<=PLUS20P(value)))
-		falg=1;
+	if(steps_program[step_current].num < 5)
+	{
+		value = ((value*7)/10) + 175;
+		if((ADC_value[steps_program[step_current].num]>=MINUS20P(value))
+			&&(ADC_value[steps_program[step_current].num]<=PLUS20P(value)))
+				falg=1;
+	}
+	else
+	{
+		if (special_step_flag==0)
+		{
+			special_step_flag = 1;
+			special_step_count = 0;
+		}
+		else
+		{
+			if(special_step_count >= 250)
+			{
+				falg = 1;
+				special_step_flag = 0;
+			}
+		}
+		special_step_count++;
+	}
 	return falg;
 }
 
@@ -80,7 +102,6 @@ void Steps_Handle()
 	ADC_fresh[steps_program[step_current].num]=0;
 	if((ADC_prev/10)==(ADC_value[steps_program[step_current].num]/10))
 	{
-		UdpSendDataTmpPort(datagramin.ip, datagramin.port, &ADC_prev, 4);
 		if(step_over(steps_program[step_current].value)) //Warunek na zmianę kroku na następny
 		{
 			if(step_current==step_end)

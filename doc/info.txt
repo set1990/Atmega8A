@@ -10,10 +10,7 @@ Wypełnienie 1.5ms pozwala ustawić serwo idealnie na środku.
 0.5ms do 2.5ms (1.5 środek)
 
 Serwa pomiar
-PE2 (ADC7)
 PE1 (ADC6)
-PC5 (ADC5)
-PC4 (ADC4)
 PC3 (ADC3)
 PC2 (ADC2)
 PC1 (ADC1)
@@ -26,8 +23,14 @@ PD2(OUT2)
 PD3(OUT3) 
 PD4(OUT4) 
 PD5(OUT5) 
-PD6(OUT6) 
-PD7(OUT7) 
+
+Inne
+PD6(OUT6) -jakiś siłownik 
+
+i2c
+PC5 (SCL)
+PC4 (SDA)
+
 
 PC 192.168.1.151 Atmega8 192.168.1.150
 
