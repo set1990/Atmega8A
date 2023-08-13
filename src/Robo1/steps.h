@@ -25,6 +25,6 @@ void Steps_add(uint8_t num, uint16_t value);
 void Steps_clear(void);
 void Steps_pause(void);
 void Steps_Handle(void);
-const unsigned char* Steps_list(void);
+const unsigned char* Steps_list(uint8_t* size_list_out);
 
 #endif /* STEPS_H_ */

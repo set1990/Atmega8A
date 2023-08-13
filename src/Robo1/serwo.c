@@ -10,6 +10,7 @@
  */
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "serwo.h"
 
 #define MIN_REAL_VALUE		9600
@@ -27,8 +28,9 @@
 							sei()
 #define STATE_CHECK(PIN)	((1&&serwo_state[PIN])<<PIN)
 
-uint16_t serwo_value[SERWO_QUANTITY] = {0x00};
-uint8_t serwo_state[SERWO_QUANTITY] = {DISABLE};
+volatile uint16_t serwo_value[SERWO_QUANTITY] = {0x00};
+volatile uint8_t serwo_state[SERWO_QUANTITY] = {DISABLE};
+uint16_t timer_value;
 
 void Serwo_init()
 {
@@ -55,30 +57,32 @@ ISR(TIMER0_OVF_vect)
 	SET_TIMER1();
 	while(1)
 	{
-		if((serwo_value[PD0])<TCNT1)
+		timer_value = TCNT1;
+		if((serwo_value[PD0])<=timer_value)
 		{
 			CLEAN_PIN(PD0);
 		}
-		if((serwo_value[PD1])<TCNT1)
+		if((serwo_value[PD1])<=timer_value)
 		{
 			CLEAN_PIN(PD1);
 		}
-		if((serwo_value[PD2])<TCNT1)
+		if((serwo_value[PD2])<=timer_value)
 		{
 			CLEAN_PIN(PD2);
 		}
-		if((serwo_value[PD3])<TCNT1)
+		if((serwo_value[PD3])<=timer_value)
 		{
 			CLEAN_PIN(PD3);
 		}
-		if((serwo_value[PD4])<TCNT1)
+		if((serwo_value[PD4])<=timer_value)
 		{
 			CLEAN_PIN(PD4);
 		}
-		if((serwo_value[PD5])<TCNT1)
+		if((serwo_value[PD5])<=timer_value)
 		{
 			CLEAN_PIN(PD5);
 		}
 		if(CLAEN_PORT_VALUE) break;
 	}
+	_delay_us(1);
 }

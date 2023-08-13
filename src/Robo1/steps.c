@@ -44,8 +44,10 @@ void Steps_clear()
 	step_run_flag = PAUSE_STEPS;
 }
 
-const unsigned char* Steps_list()
+const unsigned char* Steps_list(uint8_t* size_list_out)
 {
+	if(step_end==0) steps_program[step_end].num = 9;
+	*size_list_out = step_end;
 	return (unsigned char*)(steps_program);
 }
 

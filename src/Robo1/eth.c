@@ -24,6 +24,7 @@
 #define LIST_STEPS		0x08
 #define LIS3MDL_TR		0x09
 #define LIS3MDL_READ	0x0A
+#define PING			0x0B
 
 #define GET_SERWO_NUM(ARG)	 (ARG[0])
 #define GET_SERWO_VALUE(ARG) ((ARG[1]<<8)|ARG[2])
@@ -39,26 +40,27 @@ typedef union{
 } datain;
 
 datain EthData = {0};
-
 char NewOrderFlag=0;
+const unsigned char data_out_FAIL[] = "FAIL";
+const unsigned char data_out_OK[] = "OK";
 
 unsigned char UdpOnIncomingDatagram(const UdpDatagram datagram, const unsigned char *data, unsigned short dataLength)
 {
-	const unsigned char data_out_OK[] = "OK";
-	const unsigned char data_out_FAIL[] = "FAIL";
 	if(ORDER_MAX>=dataLength)
 	{
 		memcpy(EthData.data, data, dataLength);
 		memcpy(&datagramin, &datagram, sizeof(UdpDatagram));
-		UdpSendDataTmpPort(datagram.ip, datagram.port, data_out_OK, sizeof(data_out_OK));
-		NewOrderFlag=1;
+		if(LIS3MDL_READ >= EthData.order.type) NewOrderFlag=1;
+		else UdpSendData(datagram.ip, datagramin.remotePort, datagram.port, data_out_FAIL, sizeof(data_out_FAIL));
 	}
-	else UdpSendDataTmpPort(datagram.ip, datagram.port, data_out_FAIL, sizeof(data_out_FAIL));
+	else UdpSendData(datagram.ip, datagramin.remotePort, datagram.port, data_out_FAIL, sizeof(data_out_FAIL));
 	return 0;
 }
 
 void Eth_order_Handle()
 {
+	uint8_t step_cnt = 0;
+	const unsigned char* list;
 	if(NewOrderFlag)
 	{
 		switch(EthData.order.type)
@@ -66,52 +68,65 @@ void Eth_order_Handle()
 			case SET_NEW_VLUE:
 				Serwo_set_value(GET_SERWO_NUM(EthData.order.arg),GET_SERWO_VALUE(EthData.order.arg));
 				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				break;
 
 			case ADC_READ:
-				UdpSendDataTmpPort(datagramin.ip, datagramin.port, (const unsigned char *)(&ADC_value), sizeof(ADC_value));
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, (const unsigned char *)(&ADC_value), sizeof(ADC_value));
 				NewOrderFlag=0;
 				break;
 
 			case ENABLE_SERWO:
 				Serwo_ON_OFF(GET_SERWO_NUM(EthData.order.arg), ENABLE);
 				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				break;
 
 			case DISABLE_SERWO:
 				Serwo_ON_OFF(GET_SERWO_NUM(EthData.order.arg), DISABLE);
 				Steps_pause();
 				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				break;
 
 			case RUN_PROGRAM:
 				Steps_run();
 				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				break;
 
 			case ADD_STEP:
 				Steps_add(GET_SERWO_NUM(EthData.order.arg),GET_SERWO_VALUE(EthData.order.arg));
 				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				break;
 
 			case CLEAR_STEPS:
 				Steps_clear();
 				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				break;
 
 			case LIST_STEPS:
-				UdpSendDataTmpPort(datagramin.ip, datagramin.port, Steps_list(), sizeof(steps_q)*MAX_STEPS);
+				list = Steps_list(&step_cnt);
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, list, sizeof(steps_q)*((step_cnt !=0) ? step_cnt : 1));
 				NewOrderFlag=0;
 				break;
 
 			case LIS3MDL_TR:
 				LIS3MDL_Triger();
 				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				break;
 
 			case LIS3MDL_READ:
-				UdpSendDataTmpPort(datagramin.ip, datagramin.port, (const unsigned char *)(&LIS3MDL_date), sizeof(LIS3MDL_date));
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port,(const unsigned char *)(&LIS3MDL_date), sizeof(LIS3MDL_date));
 				LIS3MDL_date[pNEW_VAL] = 0;
+				NewOrderFlag=0;
+				break;
+
+			case PING:
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
 				NewOrderFlag=0;
 				break;
 
