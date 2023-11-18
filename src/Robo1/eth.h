@@ -1,10 +1,3 @@
-/*
- * eth.h
- *
- *  Created on: 10 sie 2022
- *      Author: Borsuk
- */
-
 #ifndef ETH_H_
 #define ETH_H_
 

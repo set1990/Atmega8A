@@ -1,10 +1,3 @@
-/*
- * steps.h
- *
- *  Created on: 12 sie 2022
- *      Author: Borsuk
- */
-
 #ifndef STEPS_H_
 #define STEPS_H_
 

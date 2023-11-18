@@ -1,14 +1,3 @@
-/*
- * serwo.h
- *
- *  Created on: 10 sie 2022
- *      Author: Borsuk
- *
- *	!!!IMPROTANT!!
- *  tics_per_1us 12
- *  tics_per_1ms (tics_per_1us*1000)
- */
-
 #ifndef SERWO_H_
 #define SERWO_H_
 #include <stdint.h>

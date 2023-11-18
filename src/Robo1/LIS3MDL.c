@@ -1,11 +1,3 @@
-/*
- * LIS3MDL.c
- *
- *  Created on: 24 sty 2023
- *      Author: Borsuk
- */
-
-
 #include "i2c.h"
 #include "LIS3MDL.h"
 #include "eth.h"
@@ -15,6 +7,7 @@
 #define CTRL_REG1		 	0x20
 #define OM1				 	0x06
 #define OM0				 	0x05
+#define DO2					0x04
 #define CTRL_REG3		 	0x22
 #define MD1				 	0x01
 #define MD0				 	0x00
@@ -31,7 +24,7 @@
 	Data_out_i2c = CTRL_REG1;\
 	I2C_back = Data_Write;\
 	I2C_start(LIS3MDL_ADDRESS, WRITE_DETA_I2C);\
-	data_to_write = (1<<OM1)|(1<<OM0);\
+	data_to_write = (1<<OM1)|(1<<OM0)|(1<<DO2);\
 }
 
 #define UltraHighPerformanceZ()\
@@ -105,9 +98,9 @@ typedef enum
 LIS3MDL_state LIS3MDL_state_machin = InitUHPXY;
 
 char LIS3MDL_date[8] = {0};
-char data_to_write = 0;
+static char data_to_write = 0;
 
-void Data_Read_Triger()
+static void Data_Read_Triger()
 {
 	I2C_rep_start(LIS3MDL_ADDRESS, READ_DETA_I2C);
 	switch(LIS3MDL_state_machin)
@@ -149,7 +142,7 @@ void Data_Read_Triger()
 	}
 }
 
-void Data_Write()
+static void Data_Write()
 {
 	Data_out_i2c = data_to_write;
 	I2C_write();

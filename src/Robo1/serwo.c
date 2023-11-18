@@ -1,13 +1,3 @@
-/*
- * serwo.c
- *
- *  Created on: 10 sie 2022
- *      Author: Borsuk
- *
- *	!!!IMPROTANT!!
- *  tics_per_1us 12
- *  tics_per_1ms (tics_per_1us*1000)
- */
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>

@@ -80,3 +80,26 @@ pozycja 850 3,29V ADC = 0x030b = 779
 pozycja 890 3,41V ADC = 0x0328 = 808
 pozycja 950 3,59V ADC = 0x0352 = 850
 pozycja 990 3,71V ADC = 0x036c = 876
+
+
+SL6
+pozycja, ADC
+0,169
+100,641
+50, 407
+25,290
+75,524
+87,581
+
+100 - (641-169)
+  x - y
+
+y = ((641-169)/100)x + 169 
+
+ADC[POS] = aPOS + ADC[0]
+a = średnia((ADC[POS]- ADC[0])/POS) = (a1+a2+..+a10)/10
+
+POS = (ADC[POS] - ADC[0])/a
+
+ 
+

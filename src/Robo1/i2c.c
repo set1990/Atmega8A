@@ -1,9 +1,3 @@
-/*
- * i2c.c
- *
- *  Created on: 10 sty 2023
- *      Author: Borsuk
- */
 #include <avr/io.h>
 #include <compat/twi.h>
 #include <avr/interrupt.h>
@@ -15,6 +9,7 @@ char Data_out_i2c = 0;
 char Transmision_Flag_i2c   = 0;
 char Transmision_adress_i2c = 0;
 char Transmision_RW_i2c		= 0; // 0-W, 1-R
+char Continue_Flag_i2c      = 0;
 
 void (*I2C_back)(void) = NULL;
 
@@ -67,6 +62,12 @@ void I2C_stop()
 	Transmision_Flag_i2c = 0;
 }
 
+void I2C_next()
+{
+	TWCR |= (1<<TWINT) | (1<<TWEN) | (1<<TWSTO);
+	Continue_Flag_i2c = 0;
+}
+
 ISR(TWI_vect)
 {
 	static char writed_flag = 0;
@@ -104,7 +105,7 @@ ISR(TWI_vect)
     	case TW_MR_DATA_ACK: // data received, ACK returned
     	case TW_MR_DATA_NACK:
     		I2C_read();
-    		I2C_stop();
+    		if(Continue_Flag_i2c == 0) I2C_stop();
     		break;
   }
 }

@@ -1,9 +1,3 @@
-/*
- * steps.c
- *
- *  Created on: 12 sie 2022
- *      Author: Borsuk
- */
 #include "steps.h"
 #include "serwo.h"
 #include "adc.h"

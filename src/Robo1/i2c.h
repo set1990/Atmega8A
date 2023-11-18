@@ -1,10 +1,3 @@
-/*
- * i2c.h
- *
- *  Created on: 24 sty 2023
- *      Author: Borsuk
- */
-
 #ifndef I2C_H_
 #define I2C_H_
 

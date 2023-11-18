@@ -1,10 +1,3 @@
-/*
- * adc.h
- *
- *  Created on: 11 sie 2022
- *      Author: Borsuk
- */
-
 #ifndef ADC_H_
 #define ADC_H_
 

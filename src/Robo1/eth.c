@@ -1,9 +1,3 @@
-/*
- * eth.c
- *
- *  Created on: 10 sie 2022
- *      Author: Borsuk
- */
 #include <string.h>
 
 #include "serwo.h"
@@ -11,6 +5,7 @@
 #include "adc.h"
 #include "steps.h"
 #include "LIS3MDL.h"
+#include "LSM6DS33.h"
 
 #define ORDER_MAX 	  	0x10
 #define ARG_MAX		  	ORDER_MAX-0x01
@@ -25,6 +20,8 @@
 #define LIS3MDL_TR		0x09
 #define LIS3MDL_READ	0x0A
 #define PING			0x0B
+#define LSM6DS33_TR		0x0C
+#define LSM6DS33_READ	0x0D
 
 #define GET_SERWO_NUM(ARG)	 (ARG[0])
 #define GET_SERWO_VALUE(ARG) ((ARG[1]<<8)|ARG[2])
@@ -50,7 +47,7 @@ unsigned char UdpOnIncomingDatagram(const UdpDatagram datagram, const unsigned c
 	{
 		memcpy(EthData.data, data, dataLength);
 		memcpy(&datagramin, &datagram, sizeof(UdpDatagram));
-		if(LIS3MDL_READ >= EthData.order.type) NewOrderFlag=1;
+		if(LSM6DS33_READ >= EthData.order.type) NewOrderFlag=1;
 		else UdpSendData(datagram.ip, datagramin.remotePort, datagram.port, data_out_FAIL, sizeof(data_out_FAIL));
 	}
 	else UdpSendData(datagram.ip, datagramin.remotePort, datagram.port, data_out_FAIL, sizeof(data_out_FAIL));
@@ -122,6 +119,18 @@ void Eth_order_Handle()
 			case LIS3MDL_READ:
 				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port,(const unsigned char *)(&LIS3MDL_date), sizeof(LIS3MDL_date));
 				LIS3MDL_date[pNEW_VAL] = 0;
+				NewOrderFlag=0;
+				break;
+
+			case LSM6DS33_TR:
+				LSM6DS33_Triger();
+				NewOrderFlag=0;
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port, data_out_OK, sizeof(data_out_OK));
+				break;
+
+			case LSM6DS33_READ:
+				UdpSendData(datagramin.ip, datagramin.remotePort, datagramin.port,(const unsigned char *)(&LSM6DS33_date), sizeof(LSM6DS33_date));
+				LSM6DS33_date[pNEW_VAL_D] = 0;
 				NewOrderFlag=0;
 				break;
 

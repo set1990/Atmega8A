@@ -1,10 +1,3 @@
-/*
- * LIS3MDL.h
- *
- *  Created on: 24 sty 2023
- *      Author: Borsuk
- */
-
 #ifndef LIS3MDL_H_
 #define LIS3MDL_H_
 

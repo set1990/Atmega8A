@@ -1,9 +1,3 @@
-/*
- * adc.c
- *
- *  Created on: 11 sie 2022
- *      Author: Borsuk
- */
 #include <avr/io.h>
 #include <stdint.h>
 #include "adc.h"

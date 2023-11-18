@@ -1,9 +1,3 @@
-/*
- * main.c
- *
- *  Created on: 10 sie 2022
- *      Author: Borsuk
- */
 #include <avr/io.h>
 #include <util/delay.h>
 #include "lib_enc28j60/network.h"
@@ -13,6 +7,7 @@
 #include "steps.h"
 #include "i2c.h"
 #include "LIS3MDL.h"
+#include "LSM6DS33.h"
 
 int main(void)
 {
@@ -27,6 +22,7 @@ int main(void)
 		ADC_Handle();
 		Steps_Handle();
 		LIS3MDL_Handle();
+		LSM6DS33_Handle();
 		_delay_ms(10);
     }
 }
